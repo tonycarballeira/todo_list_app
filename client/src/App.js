@@ -5,14 +5,22 @@ function App() {
 
   const [todoList, setTodoList] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const [changedTask, setChangedTask] = useState("")
 
   const handleChange = (event) => {
     setNewTask(event.target.value);
   };
 
-  const setChange = (event) => {
-    setChangedTask(event.target.value);
+  const updateTask = (id, event) => {
+
+    setTodoList(
+      todoList.map((task) => {
+        if (task.id === id) {
+          return {...task, taskName: event.target.value};
+        } else {
+          return task;
+        }
+      })
+    )
   };
 
   const addTask = () => {
@@ -48,18 +56,7 @@ function App() {
     )
   }
 
-  const updateTask = (id) => {
-    console.log(changedTask);
-    setTodoList(
-      todoList.map((task) => {
-        if (task.id === id) {
-          return {...task, taskName: changedTask};
-        } else {
-          return task;
-        }
-      })
-    )
-  }
+  
 
   return (
     <div className="App">
@@ -71,8 +68,7 @@ function App() {
       {todoList.map((task) => {
         return (
           <div style={{backgroundColor: task.completed ? "green" : "white"}}>
-            <input onChange={setChange} placeholder={task.taskName} />
-            <button onClick={() => updateTask(task.id)}> Update </button>
+            <input onChange={(e) => updateTask(task.id, e)} placeholder={task.taskName} />            
             <button onClick={() => deleteTask(task.id)}> X </button>
             <button onClick={() => completeTask(task.id)}> Complete Task </button>
             {task.taskName}
