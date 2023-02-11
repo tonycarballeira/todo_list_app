@@ -5,18 +5,28 @@ function App() {
 
   const [todoList, setTodoList] = useState([]);
   const [newTask, setNewTask] = useState("");
+  const [changedTask, setChangedTask] = useState("")
 
   const handleChange = (event) => {
     setNewTask(event.target.value);
   };
 
-  const addTask = () => {
-    setTodoList([...todoList, newTask]);
+  const setChange = (event) => {
+    setChangedTask(event.target.value);
   };
 
-  const deleteTask = (taskName) => {
+  const addTask = () => {
+    const task = {
+      id: todoList.length === 0 ? 1 : todoList[todoList.length - 1].id + 1,
+      taskName: newTask,
+      completed: false,
+    };
+    setTodoList([...todoList, task]);
+  };
+
+  const deleteTask = (id) => {
     const newTodoList = todoList.filter((task) => {
-      if (task === taskName){
+      if (task.id === id){
         return false;
       } else {
         return true;
@@ -24,6 +34,31 @@ function App() {
     });
 
     setTodoList(newTodoList);
+  }
+
+  const completeTask = (id) => {
+    setTodoList(
+      todoList.map((task) => {
+        if (task.id === id) {
+          return {...task, completed: true};
+        } else {
+          return task;
+        }
+      })
+    )
+  }
+
+  const updateTask = (id) => {
+    console.log(changedTask);
+    setTodoList(
+      todoList.map((task) => {
+        if (task.id === id) {
+          return {...task, taskName: changedTask};
+        } else {
+          return task;
+        }
+      })
+    )
   }
 
   return (
@@ -35,9 +70,12 @@ function App() {
      <div className='list'>
       {todoList.map((task) => {
         return (
-          <div>
-            <h1>{task}</h1>
-            <button onClick={() => deleteTask(task)}> X </button>
+          <div style={{backgroundColor: task.completed ? "green" : "white"}}>
+            <input onChange={setChange} placeholder={task.taskName} />
+            <button onClick={() => updateTask(task.id)}> Update </button>
+            <button onClick={() => deleteTask(task.id)}> X </button>
+            <button onClick={() => completeTask(task.id)}> Complete Task </button>
+            {task.taskName}
           </div>
         );
       })}
